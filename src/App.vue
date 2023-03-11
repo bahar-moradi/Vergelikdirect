@@ -21,4 +21,5 @@ export default class App extends Vue {}
 * {
   font-family: 'Open Sans', sans-serif;
 }
+@import '~bootstrap/dist/css/bootstrap.css';
 </style>

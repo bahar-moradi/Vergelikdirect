@@ -1,31 +1,50 @@
 <template>
-  <simple-card class="vd-form">
-    <template #title>Autoverzekering vergelijken</template>
-
-    <template #content>
-        <p>
-            Replace me for input fields
-        </p>
-
-        <!-- LicensePlate -->
-
-        <!-- Zipcode -->
-
-        <!-- Housenumber -->
-
-        <!-- Housenumber addition -->
-
-        <!-- birthdate -->
-
-        <!-- ClaimFree years -->
-
-        <!-- Kilometrage -->
-
-        <div class="btn" @click="onSubmit">
-            Vergelijken
+<div class="d-flex align-items-center " style="height: 100vh;">
+  <div class="container bg-light py-4 px-4 rounded">
+    <h1>Compare Car Insurance</h1>
+    <p class="lead">
+      Please complete the form below to start the process.
+    </p>
+    <form class="form">
+      <div class="form-group">
+        <label for="input1">LicensePlate</label>
+        <input type="text" class="form-control" id="input1" placeholder="Enter license plate...">
+      </div>
+      <div class="form-group">
+        <label for="input2">Zipcode</label>
+        <input type="text" class="form-control" id="input2" placeholder="0000XX">
+      </div>
+      <div class="form-row">
+        <div class="form-group col-8">
+          <label for="input3">House number</label>
+          <input type="nember" class="form-control" id="input3">
         </div>
-    </template>
-  </simple-card>
+        <div class="form-group col-4">
+          <label for="input4">Addition</label>
+          <input type="text" class="form-control" id="input4">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="input5">Birth Date</label>
+        <input type="text" class="form-control" id="input5" placeholder="DD-MM-YYYY">
+      </div>
+      <div class="form-group">
+        <label for="input6">ClaimFree years</label>
+        <input type="range" id="input6" class="form-control-range">
+      </div>
+      <div class="form-group">
+        <label for="input7">Kilometer Range</label>
+        <select class="form-control" id="input7">
+          <option>1</option>
+          <option>2</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" type="submit">Compare now</button>
+
+    </form>
+  </div>
+</div>
+ 
 </template>
 
 <script lang="ts">
@@ -45,28 +64,14 @@ export default class CarForm extends Vue {
 </script>
 
 <style scoped>
-    .vd-form {
-        width: 330px;
-    }
+.vd-form {
+  width: 330px;
+}
 
-    @media only screen and (max-width: 768px) {
-        .vd-form {
-            width: 100%;
-        }
-    }
+@media only screen and (max-width: 768px) {
+  .vd-form {
+    width: 100%;
+  }
+}
 
-    .btn {
-        background: #0cbe3b;
-        text-align: center;
-        padding: 10px 10px;
-        font-weight: 600;
-        color: white;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: .1s ease;
-    }
-
-    .btn:hover {
-        background: #0ed642;
-    }
 </style>
