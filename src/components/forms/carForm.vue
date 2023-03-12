@@ -34,9 +34,8 @@
       </div>
       <div class="form-group">
         <label for="input7">Kilometer Range</label>
-        <select class="form-control" id="input7">
-          <option>1</option>
-          <option>2</option>
+        <select class="form-control" id="input7" v-model="selected">
+          <option v-for="option in options" :value="option.value">{{ option.value }}</option>
         </select>
       </div>
       <button class="btn btn-primary" type="submit">Compare now</button>
@@ -51,6 +50,8 @@
 import { Options, Vue } from 'vue-class-component';
 import SimpleCard from './simpleCard.vue';
 
+
+
 @Options({
   components: {
     SimpleCard,
@@ -60,7 +61,26 @@ export default class CarForm extends Vue {
   onSubmit(): void {
     console.log('Button is clicked');
   }
+
+  data(){
+    return{
+      selected:'7501 t/m 10000 KM', 
+      options:[
+        {value:'0 t/m 7500 KM'},
+        {value:'7501 t/m 10000 KM'},
+        {value:'10001 t/m 12000 KM'},
+        {value:'12001 t/m 15000 KM'},
+        {value:'15000 t/m 20000 KM'},
+        {value:'20001 t/m 25000 KM'},
+        {value:'25001 t/m 30000 KM'},
+        {value:'30001 t/m 90000 KM'},
+      ]
+      }
+  }
+
+
 }
+
 </script>
 
 <style scoped>
