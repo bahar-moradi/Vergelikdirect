@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex align-items-center " style="height: 100vh;">
+  <div class="body d-flex align-items-center " style="height: 100vh;">
     <div class="container bg-light py-4 px-4 rounded">
       <h1>Compare Car Insurance</h1>
       <p class="lead">
@@ -43,19 +43,22 @@
         </div>
         <div class="form-group">
           <label for="input5">Birth Date</label>
-          <input type="text" class="form-control" id="input5" placeholder="DD-MM-YYYY"  pattern="[0-3]{1}[0-9]{1}-[0-1]{1}[0-9]{1}-[1-2]{1}[0-9]{3}" required >
+          <input type="text" class="form-control" id="input5" placeholder="DD-MM-YYYY" @change="calculateAge($event)" pattern="[0-3]{1}[0-9]{1}-[0-1]{1}[0-9]{1}-[1-2]{1}[0-9]{3}" required >
           <div class="invalid-feedback">
               Please provide a valide date in DD-MM-YYYY format.
             </div>
+            
+           
         </div>
         <div class="form-group">
           <label for="input6">ClaimFree years</label>
-          <input type="range" id="input6" class="form-control-range">
+          <input type="range" id="input6" class="form-control-range" min="-5" :max="claimFreeMax" value="0" >
+          <div>{{ claimFreeMax }}</div>
         </div>
         <div class="form-group">
           <label for="input7">Kilometer Range</label>
           <select class="form-control" id="input7" v-model="selected">
-            <option v-for="kilometerRange in kilometerRanges" :value="kilometerRange.value">{{ kilometerRange.text }}</option>
+            <option v-for="kilometerRange in kilometerRanges" :value="kilometerRange.value" :key="kilometerRange.text">{{ kilometerRange.text }}</option>
           </select>
         </div>
         <button class="btn btn-primary" type="submit">Compare now</button>
@@ -78,6 +81,11 @@ import moment from 'moment';
   },
 })
 export default class CarForm extends Vue {
+
+  invalideClass: string = "is-invalid";
+
+  claimFreeMax: any = '';
+
   onSubmit(e:any): void {
     console.log('Button is clicked');
     if (e.target.checkValidity() === false) {
@@ -122,8 +130,29 @@ export default class CarForm extends Vue {
     e.target.value=e.target.value.replace(' ','').replace('-','').toUpperCase();
   }
 
-  
+  calculateAge(e:any){
+    var date= moment(e.target.value,"DD-MM-YYYY");
+    var currentDate=moment();
+    if(date.isValid()){
+      var age=currentDate.diff(date,'years');
+      if(age<100){ 
+        this.setClaimFreeMax(age);
+      }
+      if(age>100)
+      { e.target.classList.add(this.invalideClass)
+        alert('you are too old for this')
 
+      }
+     
+    }
+    else{
+      e.target.classList.add(this.invalideClass);
+    }
+  }
+
+  setClaimFreeMax(age: number) {
+    this.claimFreeMax = age - 18;
+  }
 
 }
 
@@ -135,6 +164,13 @@ export default class CarForm extends Vue {
 </script>
 
 <style scoped>
+.body{
+   background-image: linear-gradient(to right, #24C6DC 0%, #514A9D 51%, #24C6DC 100%);
+}
+
+
+
+
 .vd-form {
   width: 330px;
 }
