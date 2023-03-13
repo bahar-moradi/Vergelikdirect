@@ -1,0 +1,67 @@
+<div class="body d-flex align-items-center " style="height: 100vh;">
+  <div class="container bg-light py-4 px-4 rounded">
+    <h1>Compare Car Insurance</h1>
+    <p class="lead">
+      Please complete the form below to start the process.
+    </p>
+    <form class="form" @submit="onSubmit($event)" novalidate>
+      <div class="form-group">
+        <label for="input1">LicensePlate</label>
+        <input type="text" class="form-control" id="input1" placeholder="Enter license plate..."
+          v-on:keyup="fixLisencePlateForm($event)" @change="getCartData($event)" pattern="[A-Z0-9]{6}" required>
+        <div class="invalid-feedback">
+          Please provide a valide lisence plate.
+        </div>
+      </div>
+      <div>
+        {{ carData[0].merk }}
+        {{ carData[0].datum_eerste_toelating }}
+      </div>
+      <div class="form-group">
+        <label for="input2">Zipcode</label>
+        <input type="text" class="form-control" id="input2" placeholder="0000XX" pattern="[1-9]{1}[0-9]{3}[A-Z]{2}"
+          v-on:keyup=fixZipCodeFormat($event) required>
+        <div class="invalid-feedback">
+          Please provide a valide zipecode.
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-8">
+          <label for="input3">House number</label>
+          <input type="number" class="form-control" id="input3" required>
+          <div class="invalid-feedback">
+            Please provide a valid house number.
+          </div>
+        </div>
+        <div class="form-group col-4">
+          <label for="input4">Addition</label>
+          <input type="text" class="form-control" id="input4" pattern="[A-Za-z0-9]">
+          <div class="invalid-feedback">
+            Please fill out the addition field.
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="input5">Birth Date</label>
+        <input type="text" class="form-control" id="input5" placeholder="DD-MM-YYYY" @change="calculateAge($event)"
+          pattern="[0-3]{1}[0-9]{1}-[0-1]{1}[0-9]{1}-[1-2]{1}[0-9]{3}" required>
+        <div class="invalid-feedback">
+          Please provide a valide date in DD-MM-YYYY format.
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="input6">ClaimFree years</label>
+        <input type="range" id="input6" class="form-control-range" min="-5" :max="claimFreeMax" value="0">
+        <div>{{ claimFreeMax }}</div>
+      </div>
+      <div class="form-group">
+        <label for="input7">Kilometer Range</label>
+        <select class="form-control" id="input7" v-model="selected">
+          <option v-for="kilometerRange in kilometerRanges" :value="kilometerRange.value" :key="kilometerRange.text">{{
+            kilometerRange.text }}</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" type="submit">Compare now</button>
+    </form>
+  </div>
+</div>
