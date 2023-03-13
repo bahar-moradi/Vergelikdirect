@@ -28,16 +28,25 @@
         <div class="form-row">
           <div class="form-group col-8">
             <label for="input3">House number</label>
-            <input type="nember" class="form-control" id="input3">
+            <input type="number" class="form-control" id="input3" required>
+            <div class="invalid-feedback">
+              Please provide a valid house number.
+            </div>
           </div>
           <div class="form-group col-4">
             <label for="input4">Addition</label>
-            <input type="text" class="form-control" id="input4">
+            <input type="text" class="form-control" id="input4" pattern="[A-Za-z0-9]">
+            <div class="invalid-feedback">
+              Please fill out the addition field.
+            </div>
           </div>
         </div>
         <div class="form-group">
           <label for="input5">Birth Date</label>
-          <input type="text" class="form-control" id="input5" placeholder="DD-MM-YYYY">
+          <input type="text" class="form-control" id="input5" placeholder="DD-MM-YYYY"  pattern="[0-3]{1}[0-9]{1}-[0-1]{1}[0-9]{1}-[1-2]{1}[0-9]{3}" required >
+          <div class="invalid-feedback">
+              Please provide a valide date in DD-MM-YYYY format.
+            </div>
         </div>
         <div class="form-group">
           <label for="input6">ClaimFree years</label>
@@ -59,6 +68,7 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import SimpleCard from './simpleCard.vue';
+import moment from 'moment';
 
 
 
@@ -70,6 +80,11 @@ import SimpleCard from './simpleCard.vue';
 export default class CarForm extends Vue {
   onSubmit(e:any): void {
     console.log('Button is clicked');
+    if (e.target.checkValidity() === false) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    e.target.classList.add('was-validated');
   }
       selected:string='2';
       kilometerRanges:any= [
@@ -106,6 +121,10 @@ export default class CarForm extends Vue {
   fixZipCodeFormat(e:any):void{
     e.target.value=e.target.value.replace(' ','').replace('-','').toUpperCase();
   }
+
+  
+
+
 }
 
 
