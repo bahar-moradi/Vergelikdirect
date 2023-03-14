@@ -6,21 +6,21 @@
     </p>
     <form class="form" @submit="onSubmit($event)" novalidate>
       <div class="form-group">
-        <label for="input1">LicensePlate</label>
-        <input type="text" class="form-control" id="input1" placeholder="Enter license plate..."
-          v-on:keyup="fixLisencePlateForm($event)" @change="getCartData($event)" pattern="[A-Z0-9]{6}" required>
+        <label for="txtLicensePlate">LicensePlate</label>
+        <input type="text" class="form-control" id="txtLicensePlate" v-on:keyup="txtLicensePlate_onKeyup($event)"
+          v-on:keydown="txtLicensePlate_onKeydown($event)" pattern="[A-Z0-9]{6}" required>
         <div class="invalid-feedback">
           Please provide a valide lisence plate.
         </div>
       </div>
-      <div>
-        {{ carData[0].merk }}
-        {{ carData[0].datum_eerste_toelating }}
+      <div v-if="carData[0].merk.length > 0" class="alert alert-info">
+        <strong>Brand:</strong> {{ carData[0].merk }} <br />
+        <strong>Manufacturing year:</strong> {{ carData[0].datum_eerste_toelating.substring(0,4) }}
       </div>
       <div class="form-group">
         <label for="input2">Zipcode</label>
         <input type="text" class="form-control" id="input2" placeholder="0000XX" pattern="[1-9]{1}[0-9]{3}[A-Z]{2}"
-          v-on:keyup=fixZipCodeFormat($event) required>
+          v-on:keyup="fixZipCodeFormat($event)" v-on:keydown="txtZipCode_onKeydown($event)" required>
         <div class="invalid-feedback">
           Please provide a valide zipecode.
         </div>
@@ -42,25 +42,32 @@
         </div>
       </div>
       <div class="form-group">
-        <label for="input5">Birth Date</label>
-        <input type="text" class="form-control" id="input5" placeholder="DD-MM-YYYY" @change="calculateAge($event)"
-          pattern="[0-3]{1}[0-9]{1}-[0-1]{1}[0-9]{1}-[1-2]{1}[0-9]{3}" required>
+        <label for="txtBirthDate">Birth Date</label>
+        <input type="text" class="form-control" id="txtBirthDate" placeholder="DD-MM-YYYY"
+          pattern="[0-3]{1}[0-9]{1}-[0-1]{1}[0-9]{1}-[1-2]{1}[0-9]{3}" v-on:keyup=txtBirthDate_onKeyup($event)
+          v-on:keydown=txtBirthDate_onKeydown($event) required>
         <div class="invalid-feedback">
-          Please provide a valide date in DD-MM-YYYY format.
+          {{defaultBirthDateException}}
         </div>
       </div>
-      <div class="form-group">
-        <label for="input6">ClaimFree years</label>
-        <input type="range" id="input6" class="form-control-range" min="-5" :max="claimFreeMax" value="0">
-        <div>{{ claimFreeMax }}</div>
+      <div class="form-row">
+        <div class="form-group col-11">
+          <label for="input6">ClaimFree years</label>
+          <input type="range" id="input6" class="form-control-range" min="-5" :max="claimFreeMax"
+            v-model="claimFreeYears" >
+        </div>
+        <div class="form-group col-1">
+          <label for="input6"></label>
+          <input type="number" class="form-control text-center form-control-sm" :value="claimFreeYears" readonly>
+        </div>
       </div>
       <div class="form-group">
         <label for="input7">Kilometer Range</label>
         <select class="form-control" id="input7" v-model="selected">
-          <option v-for="kilometerRange in kilometerRanges" :value="kilometerRange.value" :key="kilometerRange.text">{{
-            kilometerRange.text }}</option>
+            <option v-for="kilometerRange in kilometerRanges" :value="kilometerRange.value" :key="kilometerRange.text">
+              {{kilometerRange.text }}</option>            
         </select>
-      </div>
+    </div>
       <button class="btn btn-primary" type="submit">Compare now</button>
     </form>
   </div>

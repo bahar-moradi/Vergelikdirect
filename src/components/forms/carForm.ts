@@ -2,23 +2,20 @@ import { Options, Vue } from 'vue-class-component';
 import SimpleCard from './simpleCard.vue';
 import moment from 'moment';
 
+
 @Options({
   components: {
-    SimpleCard
+    SimpleCard,
+
   },
 })
 export default class CarForm extends Vue {
   invalideClass: string = "is-invalid";
-  claimFreeMax: any = '';
+  claimFreeMax: number = 0;
+  claimFreeYears: number = 0;
 
-  onSubmit(e: any): void {
-    console.log('Button is clicked');
-    if (e.target.checkValidity() === false) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    e.target.classList.add('was-validated');
-  }
+  defaultBirthDateException = "Please provide a valide date in DD-MM-YYYY format.";
+
   selected: string = '2';
   kilometerRanges: any = [
     { text: '0 t/m 7500 KM', value: '1' },
@@ -31,6 +28,15 @@ export default class CarForm extends Vue {
     { text: '30001 t/m 90000 KM', value: '8' },
   ]
 
+  onSubmit(e: any): void {
+    console.log('Button is clicked');
+    if (e.target.checkValidity() === false) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    e.target.classList.add('was-validated');
+  }
+
   rdwURL: string = 'https://opendata.rdw.nl/resource/m9d7-ebf2.json?kenteken=';
   carData: any[] = [{ merk: "", datum_eerste_toelating: "" }];
 
@@ -38,35 +44,81 @@ export default class CarForm extends Vue {
     console.log(`Getting data for ${e.target.value}`)
 
     const url = `${this.rdwURL}${e.target.value}`;
-    this.carData = await (await fetch(url)).json();
-    
+    var data = await (await fetch(url)).json();
+
+    if (data.length > 0) {
+      this.carData = data;
+    }
+    else {
+      this.setInValid(e.target);
+      this.carData = [{ merk: "", datum_eerste_toelating: "" }];
+    }
+
     console.log(this.carData);
   }
 
-  fixLisencePlateForm(e: any): void {
+  txtLicensePlate_onKeyup(e: any): void {
     e.target.value = e.target.value.replace(' ', '').replace('-', '').toUpperCase();
+
+    if (e.target.validity.valid) {
+      this.setValid(e.target);
+      this.getCartData(e);
+    }
+  }
+
+  txtLicensePlate_onKeydown(e: any): void {
+    this.setValid(e.target);
   }
 
   fixZipCodeFormat(e: any): void {
     e.target.value = e.target.value.replace(' ', '').replace('-', '').toUpperCase();
   }
 
-  calculateAge(e: any) {
-    var date = moment(e.target.value, "DD-MM-YYYY");
-    var currentDate = moment();
-    if (date.isValid()) {
-      var age = currentDate.diff(date, 'years');
-      if (age < 100) {
-        this.setClaimFreeMax(age);
+  txtBirthDate_onKeyup(e: any): void {
+    if (e.target.validity.valueMissing) {
+      this.defaultBirthDateException = "Birth date is required!"
+      this.setInValid(e.target);
+      return;
+    }
+
+    if (e.target.validity.valid) {
+      this.setValid(e.target);
+
+      var date = moment(e.target.value, "DD-MM-YYYY", true);
+      var currentDate = moment();
+      if (date.isValid()) {
+        var age = currentDate.diff(date, 'years');
+        if (age < 100) {
+          this.setClaimFreeMax(age);
+        }
+        else {
+          this.defaultBirthDateException = "You seem too old for this :)";
+          this.setInValid(e.target);
+        }
       }
-      if (age > 100) {
-        e.target.classList.add(this.invalideClass)
-        alert('you are too old for this')
+      else {
+        this.defaultBirthDateException = "Please provide a valide date in DD-MM-YYYY format."
+        this.setInValid(e.target);
       }
     }
-    else {
-      e.target.classList.add(this.invalideClass);
+  }
+
+  txtBirthDate_onKeydown(e: any): void {
+    this.setValid(e.target);
+  }
+
+  setValid(element: any): void {
+    if (element.classList.contains(this.invalideClass) === true) {
+      element.classList.remove(this.invalideClass);
     }
+    element.setCustomValidity("");
+  }
+
+  setInValid(element: any): void {
+    if (element.classList.contains(this.invalideClass) === false) {
+      element.classList.add(this.invalideClass);
+    }
+    element.setCustomValidity("Invalid field.");
   }
 
   setClaimFreeMax(age: number) {
