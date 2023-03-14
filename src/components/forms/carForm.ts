@@ -2,21 +2,24 @@ import { Options, Vue } from 'vue-class-component';
 import SimpleCard from './simpleCard.vue';
 import moment from 'moment';
 
-
 @Options({
   components: {
     SimpleCard,
-
   },
 })
 export default class CarForm extends Vue {
+  licensePlate: string = "";
+  zipCode: string = "";
+  houseNumber!: number;
+  additionDetail: string = "";
+  birthDate: string = "";
   invalideClass: string = "is-invalid";
   claimFreeMax: number = 0;
   claimFreeYears: number = 0;
 
   defaultBirthDateException = "Please provide a valide date in DD-MM-YYYY format.";
 
-  selected: string = '2';
+  selectedKilometerRange: any = 2;
   kilometerRanges: any = [
     { text: '0 t/m 7500 KM', value: '1' },
     { text: '7501 t/m 10000 KM', value: '2' },
@@ -29,12 +32,21 @@ export default class CarForm extends Vue {
   ]
 
   onSubmit(e: any): void {
-    console.log('Button is clicked');
-    if (e.target.checkValidity() === false) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
+    e.preventDefault();
+    e.stopPropagation();
     e.target.classList.add('was-validated');
+
+    if (e.target.checkValidity() === true) {
+      var url = new URL(window.location.href);
+      url.searchParams.append('licensePlate', this.licensePlate);
+      url.searchParams.append('zipCode', this.zipCode);
+      url.searchParams.append('houseNumber', this.houseNumber.toString());
+      url.searchParams.append('additionDetail', this.additionDetail);
+      url.searchParams.append('birthDate', this.birthDate);
+      url.searchParams.append('selectedKilometerRange', this.selectedKilometerRange);
+      window.location.assign(url.href);
+      console.log(url);
+    }
   }
 
   rdwURL: string = 'https://opendata.rdw.nl/resource/m9d7-ebf2.json?kenteken=';
@@ -92,7 +104,7 @@ export default class CarForm extends Vue {
           this.setClaimFreeMax(age);
         }
         else {
-          this.defaultBirthDateException = "You seem too old for this :)";
+          this.defaultBirthDateException = "You seem a bit old for this :)";
           this.setInValid(e.target);
         }
       }
